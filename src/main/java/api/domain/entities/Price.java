@@ -1,4 +1,4 @@
-package com.ecommerce.domain.entities;
+package api.domain.entities;
 
 import jakarta.persistence.*;
 
@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "tbl_prices", schema = "ecommerce_platform")
+@Table(name = "tbl_prices", schema = "plataforma_core")
 public class Price {
     @Id
     @Column(name = "product_id")

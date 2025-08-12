@@ -1,26 +1,29 @@
-package com.ecommerce.application.controllers;
+package api.application.controllers;
 
 import api.application.dtos.PriceDTO;
-import api.infrastructure.utils.JsonConverter;
-import org.junit.jupiter.api.BeforeEach;
+import api.application.exceptions.PriceNotFoundException;
+import api.application.services.PriceApplicationService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.stream.Stream;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@WebMvcTest(PriceController.class)
 public class PriceControllerTest {
 
     private static final int PRODUCT_ID = 35455;
@@ -28,42 +31,51 @@ public class PriceControllerTest {
     public static final String CURRENCY = "EUR";
 
     @Autowired
-    private WebApplicationContext webApplicationContext;
-
     private MockMvc mockMvc;
 
-    @BeforeEach
-    public void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    }
+    @MockBean
+    private PriceApplicationService priceApplicationService;
 
     @ParameterizedTest
     @MethodSource("priceProvider")
-    public void should_return_OK_given_prices(String dateTime, PriceDTO priceDTO) throws Exception {
+    @DisplayName("Should return 200 OK with correct price data for valid inputs")
+    public void should_return_OK_given_prices(String dateTime, PriceDTO expectedDto) throws Exception {
         LocalDateTime date = LocalDateTime.parse(dateTime);
+
+        when(priceApplicationService.getPrice(PRODUCT_ID, BRAND_ID, date))
+                .thenReturn(Optional.of(expectedDto));
 
         mockMvc.perform(get("/price")
                         .param("product_id", String.valueOf(PRODUCT_ID))
                         .param("brand_id", String.valueOf(BRAND_ID))
                         .param("date", date.toString())
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string(JsonConverter.convertToJson(priceDTO)));
+                .andExpect(jsonPath("$.productId").value(expectedDto.getProductId()))
+                .andExpect(jsonPath("$.brandId").value(expectedDto.getBrandId()))
+                .andExpect(jsonPath("$.price").value(expectedDto.getPrice()))
+                .andExpect(jsonPath("$.currency").value(expectedDto.getCurrency()))
+                .andExpect(jsonPath("$.startDate").value(expectedDto.getStartDate().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)))
+                .andExpect(jsonPath("$.endDate").value(expectedDto.getEndDate().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
     }
 
     @ParameterizedTest
     @MethodSource("priceNotFoundProvider")
+    @DisplayName("Should return 404 Not Found for dates with no applicable price")
     public void should_return_KO_when_not_found(String dateTime) throws Exception {
         LocalDateTime date = LocalDateTime.parse(dateTime);
+        String expectedMessage = "Price not found for product ID: " + PRODUCT_ID + " and brand ID: " + BRAND_ID;
 
-        String expectedJson = String.format("{\"path\":\"/price\",\"message\":\"Price not found\"}", dateTime);
+        when(priceApplicationService.getPrice(PRODUCT_ID, BRAND_ID, date))
+                .thenThrow(new PriceNotFoundException(expectedMessage));
+
         mockMvc.perform(get("/price")
                         .param("product_id", String.valueOf(PRODUCT_ID))
                         .param("brand_id", String.valueOf(BRAND_ID))
                         .param("date", date.toString())
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string(expectedJson));
+                .andExpect(jsonPath("$.message").value(expectedMessage));
     }
 
     static Stream<Arguments> priceProvider() {

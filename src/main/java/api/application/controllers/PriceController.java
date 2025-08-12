@@ -1,29 +1,29 @@
-package com.ecommerce.application.controllers;
+package api.application.controllers;
 
-import com.ecommerce.application.dtos.PriceDTO;
-import com.ecommerce.application.exceptions.PriceNotFoundException;
-import com.ecommerce.domain.services.PriceService;
-import com.ecommerce.infrastructure.utils.JsonConverter;
+import api.application.dtos.PriceDTO;
+import api.application.exceptions.PriceNotFoundException;
+import api.application.services.PriceApplicationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/price")
 @Tag(name = "Price", description = "Price Managment API")
 public class PriceController {
+    private final PriceApplicationService priceApplicationService;
 
-    @Autowired
-    private PriceService priceService;
+    public PriceController(PriceApplicationService priceApplicationService) {
+        this.priceApplicationService = priceApplicationService;
+    }
 
     @GetMapping
     @Operation(summary = "Get price by product ID, brand ID, and date", description = "Returns the price details for the specified product taking priority into account")
@@ -32,21 +32,13 @@ public class PriceController {
             @ApiResponse(responseCode = "404", description = "Price not found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity getPrice(
+    public ResponseEntity<PriceDTO> getPrice(
             @RequestParam("product_id") Integer productId,
             @RequestParam("brand_id") Integer brandId,
-            @RequestParam("date") LocalDateTime date
+            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime date
     ) {
-        Optional<PriceDTO> priceDTO = priceService.getPrice(productId, brandId, date);
-        if (priceDTO.isPresent()) {
-            try {
-                String json = JsonConverter.convertToJson(priceDTO.get());
-                return ResponseEntity.ok(json);
-            } catch (Exception e) {
-                return ResponseEntity.internalServerError().build();
-            }
-        } else {
-            throw new PriceNotFoundException("Price not found with ID: " + productId);
-        }
+        PriceDTO price = priceApplicationService.getPrice(productId, brandId, date)
+                .orElseThrow(() -> new PriceNotFoundException("Price not found for product ID: " + productId + " and brand ID: " + brandId));
+        return ResponseEntity.ok(price);
     }
 }

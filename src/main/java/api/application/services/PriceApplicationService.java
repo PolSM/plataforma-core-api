@@ -1,4 +1,4 @@
-package api.domain.services;
+package api.application.services;
 
 import api.application.dtos.PriceDTO;
 import api.domain.entities.Price;
@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-public class PriceService {
+public class PriceApplicationService {
 
     private final PriceRepository priceRepository;
 
     @Autowired
-    public PriceService(PriceRepository priceRepository) {
+    public PriceApplicationService(PriceRepository priceRepository) {
         this.priceRepository = priceRepository;
     }
 

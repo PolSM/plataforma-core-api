@@ -1,4 +1,4 @@
-package api.domain.services;
+package api.application.services;
 
 import api.application.dtos.PriceDTO;
 import api.builders.PriceBuilder;
@@ -17,13 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-class PriceServiceTest {
+class PriceApplicationServiceTest {
 
     @Mock
     private JpaPriceRepository priceRepository;
 
     @InjectMocks
-    private PriceService priceService;
+    private PriceApplicationService priceApplicationService;
 
     @BeforeEach
     void setUp() {
@@ -39,7 +39,7 @@ class PriceServiceTest {
         Price price = PriceBuilder.aPrice().build();
         when(priceRepository.findPriceByProductIdAndBrandIdAndDate(PRODUCT_ID, BRAND_ID, DATE)).thenReturn(Optional.ofNullable(price));
 
-        Optional<PriceDTO> priceDTO = priceService.getPrice(PRODUCT_ID, BRAND_ID, DATE);
+        Optional<PriceDTO> priceDTO = priceApplicationService.getPrice(PRODUCT_ID, BRAND_ID, DATE);
 
         PriceDTO expectedDto = new PriceDTO(
                 PRODUCT_ID,
@@ -57,7 +57,7 @@ class PriceServiceTest {
     void should_return_null_if_there_is_no_price() {
         when(priceRepository.findPriceByProductIdAndBrandIdAndDate(PRODUCT_ID, BRAND_ID, DATE)).thenReturn(Optional.empty());
 
-        Optional<PriceDTO> priceDTO = priceService.getPrice(PRODUCT_ID, BRAND_ID, DATE);
+        Optional<PriceDTO> priceDTO = priceApplicationService.getPrice(PRODUCT_ID, BRAND_ID, DATE);
 
         assertTrue(priceDTO.isEmpty());
     }

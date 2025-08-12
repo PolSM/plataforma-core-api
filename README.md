@@ -1,4 +1,4 @@
-# E-commerce API
+# Plataforma Core API
 
 This project is an E-commerce platform application built with Java, Spring Boot, and Maven. It provides a set of RESTful APIs for managing prices, products, and brands.
 
@@ -14,8 +14,8 @@ This project is an E-commerce platform application built with Java, Spring Boot,
 1. **Clone the repository:**
 
    ```sh
-   git clone https://github.com/yourusername/ecommerce-api.git
-   cd ecommerce-api
+   git clone https://github.com/yourusername/api-api.git
+   cd api-api
 
 2. **Build the project using Maven:**
     ```sh

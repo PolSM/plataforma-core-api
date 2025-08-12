@@ -1,4 +1,4 @@
-package com.ecommerce.application.exceptions;
+package api.application.exceptions;
 
 public class PriceNotFoundException extends RuntimeException {
     public PriceNotFoundException(String message) {

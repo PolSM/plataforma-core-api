@@ -1,13 +1,11 @@
-package com.ecommerce.infrastructure.repositories;
+package api.infrastructure.repositories;
 
-import com.ecommerce.builders.PriceBuilder;
+import api.builders.PriceBuilder;
 import api.domain.entities.Price;
-import api.infrastructure.repositories.JpaPriceRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
@@ -25,7 +23,7 @@ public class JpaPriceRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        jdbcTemplate.execute("TRUNCATE TABLE ecommerce_platform.tbl_prices");
+        jdbcTemplate.execute("TRUNCATE TABLE plataforma_core.tbl_prices");
     }
 
     private static final int PRODUCT_ID = 35455;

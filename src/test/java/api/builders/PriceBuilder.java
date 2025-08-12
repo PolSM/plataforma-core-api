@@ -1,4 +1,4 @@
-package com.ecommerce.builders;
+package api.builders;
 
 import api.domain.entities.Price;
 

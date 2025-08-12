@@ -1,6 +1,6 @@
-package com.ecommerce.domain.ports;
+package api.domain.ports;
 
-import com.ecommerce.domain.entities.Price;
+import api.domain.entities.Price;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;

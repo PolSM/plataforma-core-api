@@ -1,0 +1,115 @@
+openapi: 3.0.3
+info:
+  title: "Price Management API"
+  description: "API for managing and retrieving price information for products."
+  version: "1.0.0"
+servers:
+  - url: /
+    description: "Default Server URL"
+tags:
+  - name: "Price"
+    description: "Price Managment API"
+paths:
+  /price:
+    get:
+      tags:
+        - "Price"
+      summary: "Get price by product ID, brand ID, and date"
+      description: "Returns the price details for the specified product taking priority into account"
+      operationId: "getPrice"
+      parameters:
+        - name: "product_id"
+          in: "query"
+          required: true
+          description: "ID of the product to query."
+          schema:
+            type: "integer"
+            format: "int32"
+            example: 35455
+        - name: "brand_id"
+          in: "query"
+          required: true
+          description: "ID of the brand to query."
+          schema:
+            type: "integer"
+            format: "int32"
+            example: 1
+        - name: "date"
+          in: "query"
+          required: true
+          description: "The date and time for which to find the applicable price."
+          schema:
+            type: "string"
+            format: "date-time"
+            example: "2020-06-14T10:00:00"
+      responses:
+        '200':
+          description: "Successfully retrieved price"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceDTO'
+        '404':
+          description: "Price not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    PriceDTO:
+      type: "object"
+      description: "Data Transfer Object for Price information."
+      properties:
+        product_id:
+          type: "integer"
+          format: "int32"
+          description: "The identifier of the product."
+        brand_id:
+          type: "integer"
+          format: "int32"
+          description: "The identifier of the brand."
+        price_list:
+          type: "integer"
+          format: "int32"
+          description: "The applicable price list identifier."
+        start_date:
+          type: "string"
+          format: "date-time"
+          description: "The start date of the price applicability."
+        end_date:
+          type: "string"
+          format: "date-time"
+          description: "The end date of the price applicability."
+        final_price:
+          type: "number"
+          format: "double"
+          description: "The final applicable price."
+      example:
+        product_id: 35455
+        brand_id: 1
+        price_list: 1
+        start_date: "2020-06-14T00:00:00"
+        end_date: "2020-12-31T23:59:59"
+        final_price: 35.50
+    ErrorResponse:
+      type: "object"
+      description: "Standard error response structure."
+      properties:
+        timestamp:
+          type: "string"
+          format: "date-time"
+        status:
+          type: "integer"
+        error:
+          type: "string"
+        message:
+          type: "string"
+        path:
+          type: "string"

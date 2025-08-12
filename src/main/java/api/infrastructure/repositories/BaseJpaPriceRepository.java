@@ -1,6 +1,6 @@
-package com.ecommerce.infrastructure.repositories;
+package api.infrastructure.repositories;
 
-import com.ecommerce.domain.entities.Price;
+import api.domain.entities.Price;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

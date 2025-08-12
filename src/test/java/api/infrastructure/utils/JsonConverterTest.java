@@ -1,7 +1,6 @@
-package com.ecommerce.infrastructure.utils;
+package api.infrastructure.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import api.infrastructure.utils.JsonConverter;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
