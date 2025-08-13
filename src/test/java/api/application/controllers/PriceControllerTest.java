@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -80,11 +81,11 @@ public class PriceControllerTest {
 
     static Stream<Arguments> priceProvider() {
         return Stream.of(
-                Arguments.of("2020-06-14T10:00:00", new PriceDTO(PRODUCT_ID, BRAND_ID, LocalDateTime.parse("2020-06-14T00:00:00"), LocalDateTime.parse("2020-12-31T23:59:59"), 35.50f, CURRENCY)),
-                Arguments.of("2020-06-14T16:00:00", new PriceDTO(PRODUCT_ID, BRAND_ID, LocalDateTime.parse("2020-06-14T15:00:00"), LocalDateTime.parse("2020-06-14T18:30:00"), 25.45f, CURRENCY)),
-                Arguments.of("2020-06-14T21:00:00", new PriceDTO(PRODUCT_ID, BRAND_ID, LocalDateTime.parse("2020-06-14T00:00:00"), LocalDateTime.parse("2020-12-31T23:59:59"), 35.50f, CURRENCY)),
-                Arguments.of("2020-06-15T10:00:00", new PriceDTO(PRODUCT_ID, BRAND_ID, LocalDateTime.parse("2020-06-15T00:00:00"), LocalDateTime.parse("2020-06-15T11:00:00"), 30.50f, CURRENCY)),
-                Arguments.of("2020-06-16T21:00:00", new PriceDTO(PRODUCT_ID, BRAND_ID, LocalDateTime.parse("2020-06-15T16:00:00"), LocalDateTime.parse("2020-12-31T23:59:59"), 38.95f, CURRENCY))
+                Arguments.of("2020-06-14T10:00:00", new PriceDTO(PRODUCT_ID, BRAND_ID, LocalDateTime.parse("2020-06-14T00:00:00"), LocalDateTime.parse("2020-12-31T23:59:59"), BigDecimal.valueOf(35.50), CURRENCY)),
+                Arguments.of("2020-06-14T16:00:00", new PriceDTO(PRODUCT_ID, BRAND_ID, LocalDateTime.parse("2020-06-14T15:00:00"), LocalDateTime.parse("2020-06-14T18:30:00"), BigDecimal.valueOf(25.45), CURRENCY)),
+                Arguments.of("2020-06-14T21:00:00", new PriceDTO(PRODUCT_ID, BRAND_ID, LocalDateTime.parse("2020-06-14T00:00:00"), LocalDateTime.parse("2020-12-31T23:59:59"), BigDecimal.valueOf(35.50), CURRENCY)),
+                Arguments.of("2020-06-15T10:00:00", new PriceDTO(PRODUCT_ID, BRAND_ID, LocalDateTime.parse("2020-06-15T00:00:00"), LocalDateTime.parse("2020-06-15T11:00:00"), BigDecimal.valueOf(30.50), CURRENCY)),
+                Arguments.of("2020-06-16T21:00:00", new PriceDTO(PRODUCT_ID, BRAND_ID, LocalDateTime.parse("2020-06-15T16:00:00"), LocalDateTime.parse("2020-12-31T23:59:59"), BigDecimal.valueOf(38.95), CURRENCY))
         );
     }
 

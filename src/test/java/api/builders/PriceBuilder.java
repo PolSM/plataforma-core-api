@@ -1,7 +1,8 @@
 package api.builders;
 
-import api.domain.entities.Price;
+import api.domain.model.Price;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class PriceBuilder {
@@ -11,7 +12,7 @@ public class PriceBuilder {
     private LocalDateTime endDate;
     private Integer priceList;
     private Integer priority;
-    private Float price;
+    private BigDecimal price;
     private String currency;
 
     public static PriceBuilder aPrice() {
@@ -22,7 +23,7 @@ public class PriceBuilder {
                 .setEndDate(LocalDateTime.of(2021, 12, 31, 23, 59))
                 .setPriceList(1)
                 .setPriority(0)
-                .setPrice(35.50f)
+                .setPrice(new BigDecimal("35.50"))
                 .setCurrency("EUR");
     }
 
@@ -56,7 +57,7 @@ public class PriceBuilder {
         return this;
     }
 
-    public PriceBuilder setPrice(Float price) {
+    public PriceBuilder setPrice(BigDecimal price) {
         this.price = price;
         return this;
     }

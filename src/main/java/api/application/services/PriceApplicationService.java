@@ -1,7 +1,7 @@
 package api.application.services;
 
 import api.application.dtos.PriceDTO;
-import api.domain.entities.Price;
+import api.domain.model.Price;
 import api.domain.ports.PriceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class PriceApplicationService {
     }
 
     public Optional<PriceDTO> getPrice(Integer productId, Integer brandId, LocalDateTime date) {
-        Optional<Price> price = priceRepository.findPriceByProductIdAndBrandIdAndDate(productId, brandId, date);
+        Optional<Price> price = priceRepository.findApplicablePrice(productId, brandId, date);
         return price.map(p -> new PriceDTO(
                 p.productId(),
                 p.brandId(),

@@ -1,7 +1,8 @@
 package api.infrastructure.repositories;
 
 import api.builders.PriceBuilder;
-import api.domain.entities.Price;
+import api.domain.model.Price;
+import api.infrastructure.persistence.PriceRepositoryAdapter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,14 +11,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @TestPropertySource("classpath:application-test.properties")
 @SpringBootTest
-public class JpaPriceRepositoryTest {
+public class PriceRepositoryAdapterTest {
     @Autowired
-    private JpaPriceRepository priceRepository;
+    private PriceRepositoryAdapter priceRepository;
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -36,7 +38,7 @@ public class JpaPriceRepositoryTest {
 
         priceRepository.save(aPrice);
 
-        Optional<Price> price = priceRepository.findPriceByProductIdAndBrandIdAndDate(
+        Optional<Price> price = priceRepository.findApplicablePrice(
                 PRODUCT_ID,
                 BRAND_ID,
                 date
@@ -50,7 +52,7 @@ public class JpaPriceRepositoryTest {
         Price aPrice = PriceBuilder.aPrice().build();
         priceRepository.save(aPrice);
 
-        Optional<Price> price = priceRepository.findPriceByProductIdAndBrandIdAndDate(
+        Optional<Price> price = priceRepository.findApplicablePrice(
                 PRODUCT_ID,
                 BRAND_ID,
                 LocalDateTime.of(2020, 1, 1, 0, 0)
@@ -64,7 +66,7 @@ public class JpaPriceRepositoryTest {
         Price aPrice = PriceBuilder.aPrice().build();
         priceRepository.save(aPrice);
 
-        Optional<Price> price = priceRepository.findPriceByProductIdAndBrandIdAndDate(
+        Optional<Price> price = priceRepository.findApplicablePrice(
                 PRODUCT_ID,
                 BRAND_ID,
                 LocalDateTime.of(2022, 1, 1, 0, 0)
@@ -79,12 +81,12 @@ public class JpaPriceRepositoryTest {
         Price aPrice = PriceBuilder.aPrice().build();
         Price anotherPrice = PriceBuilder.aPrice()
                 .setPriority(1)
-                .setPrice(25.50f)
+                .setPrice(new BigDecimal("25.50"))
                 .build();
         priceRepository.save(aPrice);
         priceRepository.save(anotherPrice);
 
-        Optional<Price> price = priceRepository.findPriceByProductIdAndBrandIdAndDate(
+        Optional<Price> price = priceRepository.findApplicablePrice(
                 PRODUCT_ID,
                 BRAND_ID,
                 date
